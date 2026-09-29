@@ -1,0 +1,25 @@
+# GPL-2.0-only WITH LicenseRef-OpenSSL-Exception. Modified: see
+# ../patches/deskflow/. Only the core is installed; Deskflow's own GUI is
+# removed because SynapShare runs deskflow-core as a separate process.
+name: deskflow-core
+buildsystem: cmake-ninja
+config-opts:
+  - -DCMAKE_BUILD_TYPE=Release
+  - -DCMAKE_INSTALL_LIBDIR=lib
+  - -DBUILD_TESTS=OFF
+  - -DBUILD_INSTALLER=OFF
+post-install:
+  - rm -f /app/bin/deskflow
+  - rm -f /app/share/applications/org.deskflow.deskflow.desktop
+  - rm -f /app/share/metainfo/org.deskflow.deskflow.metainfo.xml
+  - rm -f /app/share/icons/hicolor/scalable/apps/org.deskflow.deskflow.svg
+sources:
+  - type: git
+    url: https://github.com/deskflow/deskflow.git
+    # Official master as of 2026-09-15 (after the 1.26.0 release). Keep in
+    # sync with DESKFLOW_COMMIT in ../VERSIONS.md.
+    commit: 217166c06b2225adcecd1b78d815d23da0b991bd
+  # X11 buttons 6/7 (horizontal wheel) were forwarded as button clicks
+  # instead of horizontal wheel events.
+  - type: patch
+    path: ../patches/deskflow/x11-horizontal-wheel.patch

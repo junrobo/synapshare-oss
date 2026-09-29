@@ -1,0 +1,29 @@
+# LGPL-3.0-only. Modified: see ../patches/libportal/.
+#
+# KEEP libportal AT A VERSION WITHOUT THE GLOBALSHORTCUTS API (0.9.1 has
+# none). Deskflow's CMake checks for xdp_global_shortcut_new in
+# libportal/globalshortcuts.h and, when it is present, compiles in
+# PortalGlobalShortcuts, which registers every [options] hotkey with the
+# compositor as a global shortcut. The compositor then consumes those keys
+# everywhere (e.g. a Han/Eng IME toggle key stops reaching the host's own
+# IME) and a shortcut-permission dialog appears at server start. If libportal
+# has to move to a version with that API, keep the feature off in Deskflow's
+# build (drop the check_symbol_exists / HAVE_LP_SHORTCUTS branch in
+# src/lib/platform/CMakeLists.txt) or exclude those hotkeys from portal
+# registration in EiScreen.
+name: libportal
+buildsystem: meson
+config-opts:
+  - --libdir=lib
+  - -Ddocs=false
+  - -Dtests=false
+  - -Dportal-tests=false
+  - -Dvapi=false
+  - -Dbackend-qt6=auto
+sources:
+  - type: git
+    url: https://github.com/flatpak/libportal.git
+    tag: 0.9.1
+    commit: 8f5dc8d192f6e31dafe69e35219e3b707bde71ce
+  - type: patch
+    path: ../patches/libportal/qt69.patch

@@ -1,0 +1,22 @@
+Fix horizontal scroll wheel on X11 servers.
+
+mapButtonFromX() claimed X11 buttons 6 and 7 (horizontal wheel tilt) as
+plain mouse buttons, so onMouseRelease() sent meaningless button-6/7
+clicks to clients and its horizontal-wheel branch was unreachable.
+Vertical scrolling (buttons 4/5) already fell through to kButtonNone
+and worked. Let 6/7 fall through too so they are forwarded as
+horizontal wheel events.
+
+diff --git a/src/lib/platform/XWindowsScreen.cpp b/src/lib/platform/XWindowsScreen.cpp
+index d8c7bb9..ad6583b 100644
+--- a/src/lib/platform/XWindowsScreen.cpp
++++ b/src/lib/platform/XWindowsScreen.cpp
+@@ -1740,8 +1740,6 @@ ButtonID XWindowsScreen::mapButtonFromX(const XButtonEvent *event) const
+   case 1:
+   case 2:
+   case 3:
+-  case 6:
+-  case 7:
+     return static_cast<ButtonID>(button); // Handle Left, Middle and Right buttons
+   case 8:
+     return kButtonExtra0; // Mouse 4

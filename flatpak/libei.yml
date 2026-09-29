@@ -1,0 +1,13 @@
+# MIT. Deskflow's Wayland input backend.
+name: libei
+buildsystem: meson
+config-opts:
+  - --libdir=lib
+  - -Ddocumentation=[]
+  - -Dtests=disabled
+  - -Dliboeffis=disabled
+sources:
+  - type: git
+    url: https://gitlab.freedesktop.org/libinput/libei
+    tag: 1.5.0
+    commit: 19b64535408aa47abbc8151bc2c925afd6583851
